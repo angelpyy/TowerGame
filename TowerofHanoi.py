@@ -32,7 +32,7 @@ class disk(object):
         self.width = width
         self.height = height
         self.color = color
-        self.size = x * y
+        self.size = width * height
         self.active = False
 
     def draw(self, wn):
@@ -65,6 +65,9 @@ def wnDraw():
     #pygame.draw.line(wn, (0,0,0), (450,0), (450,500))
     pygame.draw.line(wn, (0,0,0), (670,0), (670,500))
     #pygame.draw.line(wn, (0,0,0), (700,0), (700,500))
+    #pygame.draw.line(wn, (0,0,0), (85, 0), (85, 500))
+    pygame.draw.line(wn, (255,0,0), (310,0), (310, 500),3)
+    pygame.draw.line(wn, (255,0,0), (560, 0), (560,500),3)
 
     pygame.display.update()
    
@@ -87,9 +90,10 @@ inDelay = 0
 #main loop
 run = True
 move = False
-print(move)
-diskY = [diskB.y, diskM.y, diskT.y]
 while run:
+
+    print(inDelay)
+
     wnDraw()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -97,7 +101,7 @@ while run:
     
     if inDelay > 0:
         inDelay += 1
-        if inDelay > 100:
+        if inDelay > 60:
             inDelay = 0
 
     keys = pygame.key.get_pressed()
@@ -105,7 +109,38 @@ while run:
     if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and inDelay == 0:
         
         if move == True:
-            pass
+            if diskB.active == True:
+                if arrowS.x == 163:
+                    arrowS.x = 413
+                    diskB.x = 315
+                elif arrowS.x == 413:
+                    arrowS.x = 663
+                    diskB.x = 565
+                elif arrowS.x == 663:
+                    arrowS.x = 163
+                    diskB.x = 65
+
+            if diskM.active == True:
+                if arrowS.x == 163:
+                    arrowS.x = 413
+                    diskM.x = 335   
+                elif arrowS.x == 413:
+                    arrowS.x = 663
+                    diskM.x = 585   
+                elif arrowS.x == 663:
+                    arrowS.x = 163
+                    diskM.x = 85   
+
+            if diskT.active == True:
+                if arrowS.x == 163:
+                    arrowS.x = 413
+                    diskT.x = 360
+                elif arrowS.x == 413:
+                    arrowS.x = 663
+                    diskT.x = 610
+                elif arrowS.x == 663:
+                    arrowS.x = 163
+                    diskT.x = 110           
         else:
             if arrowS.x == 163:
                 arrowS.x = 413
@@ -121,19 +156,24 @@ while run:
             if diskB.active == True:
                 if arrowS.x == 163:
                     arrowS.x = 663
-                    diskB.x = 663
+                    diskB.x = 565
                 elif arrowS.x == 413:
                     arrowS.x = 163
+                    diskB.x = 65
                 elif arrowS.x == 663:
                     arrowS.x = 413
+                    diskB.x = 315
 
             if diskM.active == True:
                 if arrowS.x == 163:
                     arrowS.x = 663
+                    diskM.x = 585
                 elif arrowS.x == 413:
                     arrowS.x = 163
+                    diskM.x = 85
                 elif arrowS.x == 663:
                     arrowS.x = 413
+                    diskM.x = 335
 
             if diskT.active == True:
                 if arrowS.x == 163:
@@ -154,29 +194,63 @@ while run:
                 arrowS.x = 413
         inDelay = 1
 
+    if keys[pygame.K_SPACE] and inDelay == 0:
 
-    if keys[pygame.K_SPACE]:    #IN REAL LIFE THIS SHOULD NOT WORK AND ACTUALLY IT WONT WORK LOL RIP // IM DOING SO MUCH WORK BUT IT WONT WORK BC OF MY MIN IM SO OOF oh well this is a learninf thingy
-        sel = min(diskY)
-    
+        if arrowS.x in range(diskT.x, diskT.x + 120):
+            sel = diskT
+        elif arrowS.x in range(diskM.x, diskM.x + 170):
+            sel = diskM
+        elif arrowS.x in range(diskB.x, diskB.x + 210):
+            sel = diskB 
+
         if move == True:
             if diskT.active == True:
-                diskT.y = 472
+                if (diskB.x in range(diskT.x - 150, diskT.x + 150)) or (diskM.x in range(diskT.x - 150, diskT.x + 150)):
+                    if (((diskB.y == 472 and diskB.size > diskT.size) or (diskM.y == 472 and diskM.size > diskT.size)) and diskM.x != 445):
+                        diskT.y = 445
+                    elif ((diskB.y == 445 and diskB.size > diskT.size) or (diskM.y == 445 and diskM.size > diskT.size)):
+                        diskT.y = 418
+                else:
+                    diskT.y = 472
+
                 diskT.active = False
                 move = False
             elif diskM.active == True:
-                pass
+
+                if (diskB.x in range(diskM.x - 25, diskM.x + 200)) or (diskT.x in range(diskM.x - 25, diskM.x + 200)):
+                    print("True")
+                    if ((diskT.y == 472 and diskT.size > diskM.size) or (diskB.y == 472 and diskB.size > diskM.size)):
+                        diskM.y = 445
+                    elif ((diskT.y == 445 and diskT.size > diskM.size) or (diskB.y == 445 and diskB.size > diskM.size)):
+                        diskM.y = 418
+                else:
+                    diskM.y = 472
+
+                diskM.active = False
+                move = False
             elif diskB.active == True:
-                pass
+                if (diskT.x in range(diskB.x, diskB.x + 240)) or (diskM.x in range(diskB.x, diskB.x + 240)):
+                    if ((diskT.y == 472 and diskT.size > diskB.size) or (diskM.y == 472 and diskM.size > diskB.size)):
+                        diskB.y = 445
+                    elif ((diskT.y == 445 and diskT.size > diskB.size) or (diskM.y == 445 and diskM.size > diskB.size)):
+                        diskB.y = 418                    
+                else:
+                    diskB.y = 472
+
+                diskB.active = False
+                move = False
+            sel = None
+
         else:
-            if sel == diskY[0]:
+            if sel == diskB:
                 diskB.y = 210
                 move = True
                 diskB.active = True
-            if sel == diskY[1]:
+            if sel == diskM:
                 diskM.y = 210
                 move = True
-                diskM.y = True
-            if sel == diskY[2]:
+                diskM.active = True
+            if sel == diskT:
                 diskT.y = 210
                 move = True
                 diskT.active = True
