@@ -1,6 +1,6 @@
 # Tower of Hanoi
 My first ever programming project. I'm trying to create a clone of Tower of Hanoi to go along with the recursive code I learned about.
 
-Currently, this project is still severely incomplete and riddled with bugs (one in particular that I am unsure of how to fix). I've worked on it a little more and I'm happy with the progress I've made for my first day.
+Project is complete for now, I'll come back on here, to fix it and change some things up. I know anyone who sees this will not have the ability to play this since the arrow file is limited to my computer so I'll upload that in case anyone cares to try it out.
 
-Here's to eventually being good enough to code this stuff in my sleep. :)
+In the future I plan to come back and fix this up add a reset button, add a button that will solve the puzle for you, fix the move counting mechanism, and lastly add the ability to change the amount of disks, which sounds rather difficult.
