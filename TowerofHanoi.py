@@ -8,10 +8,35 @@ pygame.init()
 #parameters/settings for window
 screenW = 840
 screenH = 500
+moves = 0
+count = 0
 wn = pygame.display.set_mode((screenW, screenH))
 bg = ((255, 255, 255))
 pygame.display.set_caption("Tower of Hanoi Puzzle")
 arrowimg = pygame.image.load(os.path.join('C:\\Game','arrow.png')).convert()
+
+#experimentation
+def deactB():
+    diskB.active = False
+    global move
+    move = False
+
+def deactM():
+    diskM.active = False
+    global move
+    move = False
+
+def deactT():
+    diskT.active = False
+    global move
+    move = False
+
+def win():
+    win = font.render('haha u win congrats :)',1, (0,0,0))
+
+    if ((diskB.y > diskM.y) and (diskM.y > diskT.y)) and ((diskT.x in range(560, 840)) and (diskM.x in range(560, 840)) and (diskB.x in range(560, 840))):
+        wn.blit(win, (260, 175))
+
 
 #OOP time to practice?
 class tower(object):
@@ -52,6 +77,8 @@ class arrow(object):
 #update(draw) objects in window
 def wnDraw():
     wn.fill(bg)
+    text = font.render('moves: ' + str(count), 1, (0, 0, 0))
+    wn.blit(text, (690, 10))
     arrowS.draw(wn)
     towerA.draw(wn)
     towerB.draw(wn)
@@ -59,15 +86,17 @@ def wnDraw():
     diskB.draw(wn)
     diskM.draw(wn)
     diskT.draw(wn)
-    pygame.draw.line(wn, (0,0,0), (170,0), (170,500))
+    #pygame.draw.line(wn, (0,0,0), (170,0), (170,500))
     #pygame.draw.line(wn, (0,0,0), (200,0), (200,500))
-    pygame.draw.line(wn, (0,0,0), (420,0), (420,500))
+    #pygame.draw.line(wn, (0,0,0), (420,0), (420,500))
     #pygame.draw.line(wn, (0,0,0), (450,0), (450,500))
-    pygame.draw.line(wn, (0,0,0), (670,0), (670,500))
+    #pygame.draw.line(wn, (0,0,0), (670,0), (670,500))
     #pygame.draw.line(wn, (0,0,0), (700,0), (700,500))
     #pygame.draw.line(wn, (0,0,0), (85, 0), (85, 500))
-    pygame.draw.line(wn, (255,0,0), (310,0), (310, 500),3)
-    pygame.draw.line(wn, (255,0,0), (560, 0), (560,500),3)
+    pygame.draw.line(wn, (255,0,0), (310,240), (310, 500),3)
+    pygame.draw.line(wn, (255,0,0), (560, 240), (560,500),3)
+    win()
+
 
     pygame.display.update()
    
@@ -90,9 +119,10 @@ inDelay = 0
 #main loop
 run = True
 move = False
+font = pygame.font.SysFont('comicsans', 45)
 while run:
-
-    print(inDelay)
+    print()
+    print(inDelay, move)
 
     wnDraw()
     for event in pygame.event.get():
@@ -196,6 +226,10 @@ while run:
 
     if keys[pygame.K_SPACE] and inDelay == 0:
 
+        moves += 1
+        if moves > 0:
+            count = moves // 2
+
         if arrowS.x in range(diskT.x, diskT.x + 120):
             sel = diskT
         elif arrowS.x in range(diskM.x, diskM.x + 170):
@@ -203,44 +237,58 @@ while run:
         elif arrowS.x in range(diskB.x, diskB.x + 210):
             sel = diskB 
 
+        #many many many if statements to check whether the disks can be placed
         if move == True:
             if diskT.active == True:
-                if (diskB.x in range(diskT.x - 150, diskT.x + 150)) or (diskM.x in range(diskT.x - 150, diskT.x + 150)):
-                    if (((diskB.y == 472 and diskB.size > diskT.size) or (diskM.y == 472 and diskM.size > diskT.size)) and diskM.x != 445):
+                if (diskB.x in range(diskT.x - 65, diskT.x + 150)) or (diskM.x in range(diskT.x - 65, diskT.x + 150)):
+                    if (diskB.y == 472 and diskB.size > diskT.size) and diskM.y != 445:
                         diskT.y = 445
-                    elif ((diskB.y == 445 and diskB.size > diskT.size) or (diskM.y == 445 and diskM.size > diskT.size)):
+                        deactT()
+                    elif (diskM.y == 445 and diskM.size > diskT.size):
                         diskT.y = 418
+                        deactT()
                 else:
                     diskT.y = 472
+                    deactT()
 
-                diskT.active = False
-                move = False
+                #diskT.active = False
+                #move = False
             elif diskM.active == True:
 
                 if (diskB.x in range(diskM.x - 25, diskM.x + 200)) or (diskT.x in range(diskM.x - 25, diskM.x + 200)):
-                    print("True")
-                    if ((diskT.y == 472 and diskT.size > diskM.size) or (diskB.y == 472 and diskB.size > diskM.size)):
-                        diskM.y = 445
+                    if ((diskB.y == 472 and (diskB.size > diskM.size))):
+                        if (diskT.x in range(diskM.x, diskM.x + 100)) and diskT.y != 472:
+                            diskM.y = 445
+                            deactM()
+                        elif (diskB.x in range(diskM.x - 30, diskM.x + 150)):
+                            diskM.y = 445
+                            deactM()
                     elif ((diskT.y == 445 and diskT.size > diskM.size) or (diskB.y == 445 and diskB.size > diskM.size)):
                         diskM.y = 418
+                        deactM()
                 else:
                     diskM.y = 472
+                    deactM()
 
-                diskM.active = False
-                move = False
+                #diskM.active = False
+                #move = False
             elif diskB.active == True:
+
                 if (diskT.x in range(diskB.x, diskB.x + 240)) or (diskM.x in range(diskB.x, diskB.x + 240)):
                     if ((diskT.y == 472 and diskT.size > diskB.size) or (diskM.y == 472 and diskM.size > diskB.size)):
                         diskB.y = 445
+                        deactB()
                     elif ((diskT.y == 445 and diskT.size > diskB.size) or (diskM.y == 445 and diskM.size > diskB.size)):
-                        diskB.y = 418                    
+                        diskB.y = 418
+                        deactB()                    
                 else:
                     diskB.y = 472
+                    deactB()
 
-                diskB.active = False
-                move = False
+                #diskB.active = False
+                #move = False
+
             sel = None
-
         else:
             if sel == diskB:
                 diskB.y = 210
